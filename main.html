@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas de Matemáticas Interactivas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+        header {
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 120px;
+            padding: 8px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .feedback {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            padding: 3px;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+        }
+        .progress {
+            display: block;
+            height: 22px;
+            background-color: #3498db;
+            border-radius: 3px;
+            transition: width 500ms ease-in-out;
+            color: white;
+            text-align: center;
+            line-height: 22px;
+            font-weight: bold;
+        }
+        .category-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        .category-content {
+            display: none;
+        }
+        .category-toggle::before {
+            content: '▶';
+            display: inline-block;
+            margin-right: 5px;
+            transition: transform 0.3s ease;
+        }
+        .category-toggle.active::before {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tareas de Matemáticas Interactivas</h1>
+    </header>
+    
+    <section>
+        <h2>Progreso General</h2>
+        <div class="progress-bar">
+            <span class="progress" id="total-progress">0%</span>
+        </div>
+    </section>
+
+    <section id="exercise-container">
+        <!-- Las categorías y ejercicios se generarán dinámicamente aquí -->
+    </section>
+
+    <button id="check-all">Verificar Todas las Respuestas</button>
+    <button id="reset-all">Reiniciar Todos los Ejercicios</button>
+
+    <script>
+        const ejercicios = {
+            "Factorización y descomposición": {
+                "Ejercicios de factorización con números primos": [
+                    { pregunta: "Factoriza 18 en números primos:", respuesta: "2x3x3" },
+                    { pregunta: "Factoriza 28 en números primos:", respuesta: "2x2x7" },
+                    { pregunta: "Factoriza 45 en números primos:", respuesta: "3x3x5" },
+                    { pregunta: "Factoriza 60 en números primos:", respuesta: "2x2x3x5" },
+                    { pregunta: "Factoriza 84 en números primos:", respuesta: "2x2x3x7" },
+                    { pregunta: "Factoriza 100 en números primos:", respuesta: "2x2x5x5" },
+                    { pregunta: "Factoriza 120 en números primos:", respuesta: "2x2x2x3x5" },
+                    { pregunta: "Factoriza 150 en números primos:", respuesta: "2x3x5x5" },
+                    { pregunta: "Factoriza 180 en números primos:", respuesta: "2x2x3x3x5" },
+                    { pregunta: "Factoriza 225 en números primos:", respuesta: "3x3x5x5" }
+                ],
+                "Ejercicios de descomposición en números primos": [
+                    { pregunta: "Descompón 50 en factores primos:", respuesta: "2x5x5" },
+                    { pregunta: "Descompón 75 en factores primos:", respuesta: "3x5x5" },
+                    { pregunta: "Descompón 90 en factores primos:", respuesta: "2x3x3x5" },
+                    { pregunta: "Descompón 108 en factores primos:", respuesta: "2x2x3x3x3" },
+                    { pregunta: "Descompón 125 en factores primos:", respuesta: "5x5x5" },
+                    { pregunta: "Descompón 144 en factores primos:", respuesta: "2x2x2x2x3x3" },
+                    { pregunta: "Descompón 200 en factores primos:", respuesta: "2x2x2x5x5" },
+                    { pregunta: "Descompón 250 en factores primos:", respuesta: "2x5x5x5" },
+                    { pregunta: "Descompón 300 en factores primos:", respuesta: "2x2x3x5x5" },
+                    { pregunta: "Descompón 360 en factores primos:", respuesta: "2x2x2x3x3x5" }
+                ]
+            },
+            "MCM y MCD": {
+                "Ejercicios de MCM y MCD": [
+                    { pregunta: "Calcula el MCM de 12 y 18:", respuesta: "36" },
+                    { pregunta: "Calcula el MCD de 24 y 36:", respuesta: "12" },
+                    { pregunta: "Calcula el MCM de 8 y 14:", respuesta: "56" },
+                    { pregunta: "Calcula el MCD de 30 y 45:", respuesta: "15" },
+                    { pregunta: "Calcula el MCM de 9 y 15:", respuesta: "45" },
+                    { pregunta: "Calcula el MCD de 40 y 60:", respuesta: "20" },
+                    { pregunta: "Calcula el MCM de 16 y 24:", respuesta: "48" },
+                    { pregunta: "Calcula el MCD de 56 y 72:", respuesta: "8" },
+                    { pregunta: "Calcula el MCM de 25 y 35:", respuesta: "175" },
+                    { pregunta: "Calcula el MCD de 48 y 64:", respuesta: "16" }
+                ],
+                "Situaciones problemáticas de MCM y MCD": [
+                    { pregunta: "Ana tiene dos relojes. Uno suena cada 6 minutos y el otro cada 8 minutos. Si ambos suenan juntos ahora, ¿en cuántos minutos volverán a sonar juntos?", respuesta: "24" },
+                    { pregunta: "Un granjero tiene 30 manzanas y 45 naranjas. Quiere dividir ambas frutas en grupos iguales con la mayor cantidad posible de frutas por grupo. ¿Cuántas frutas habrá en cada grupo?", respuesta: "15" },
+                    { pregunta: "Dos trenes salen de una estación. Uno pasa cada 12 minutos y el otro cada 15 minutos. Si ambos salen ahora, ¿cuánto tiempo pasará hasta que vuelvan a pasar juntos?", respuesta: "60" },
+                    { pregunta: "En una fábrica, la máquina A produce una pieza cada 8 minutos, y la máquina B cada 12 minutos. Si ambas comienzan a la vez, ¿cada cuántos minutos producirán piezas simultáneamente?", respuesta: "24" },
+                    { pregunta: "Un jardinero quiere plantar tulipanes y rosas en filas iguales. Tiene 60 tulipanes y 84 rosas. ¿Cuál es el mayor número de filas que puede hacer con todas las flores?", respuesta: "12" },
+                    { pregunta: "Tres barcos salen de un puerto. El primero regresa cada 10 días, el segundo cada 15 días y el tercero cada 20 días. Si salen juntos hoy, ¿dentro de cuántos días volverán a coincidir en el puerto?", respuesta: "60" },
+                    { pregunta: "Un panadero tiene 120 kg de harina y 180 kg de azúcar. Quiere hacer lotes de pastel usando toda la harina y todo el azúcar. ¿Cuál es el mayor número de lotes que puede hacer?", respuesta: "60" },
+                    { pregunta: "En una tienda, las manzanas se venden en bolsas de 5 y las peras en bolsas de 7. Si quieres comprar el mismo número de manzanas que de peras, ¿cuál es el menor número de cada fruta que debes comprar?", respuesta: "35" }
+                ]
+            },
+            "Sistema sexagesimal": {
+                "Suma": [
+                    { pregunta: "135° 45' + 88° 30':", respuesta: "224° 15'" },
+                    { pregunta: "260° 15' + 75° 50':", respuesta: "336° 05'" },
+                    { pregunta: "195° 20' + 50° 40':", respuesta: "246° 00'" },
+                    { pregunta: "87° 35' + 102° 50':", respuesta: "190° 25'" },
+                    { pregunta: "45° 55' + 65° 40':", respuesta: "111° 35'" },
+                    { pregunta: "178° 48' + 93° 27':", respuesta: "272° 15'" },
+                    { pregunta: "222° 15' + 159° 50':", respuesta: "382° 05'" },
+                    { pregunta: "56° 40' + 78° 35':", respuesta: "135° 15'" }
+                ],
+                "Resta": [
+                    { pregunta: "250° 30' - 123° 45':", respuesta: "126° 45'" },
+                    { pregunta: "180° 40' - 70° 20':", respuesta: "110° 20'" },
+                    { pregunta: "350° 15' - 180° 50':", respuesta: "169° 25'" },
+                    { pregunta: "290° 05' - 135° 30':", respuesta: "154° 35'" },
+                    { pregunta: "145° 55' - 68° 30':", respuesta: "77° 25'" },
+                    { pregunta: "275° 40' - 98° 55':", respuesta: "176° 45'" },
+                    { pregunta: "360° 00' - 185° 25':", respuesta: "174° 35'" },
+                    { pregunta: "210° 15' - 75° 40':", respuesta: "134° 35'" }
+                ],
+                "Multiplicación": [
+                    { pregunta: "25° × 3:", respuesta: "75° 00'" },
+                    { pregunta: "30° 15' × 4:", respuesta: "121° 00'" },
+                    { pregunta: "45° 20' × 2.5:", respuesta: "113° 20'" },
+                    { pregunta: "50° 10' × 3:", respuesta: "150° 30'" },
+                    { pregunta: "15° 30' × 6:", respuesta: "93° 00'" },
+                    { pregunta: "22° 45' × 3.5:", respuesta: "79° 37'" },
+                    { pregunta: "38° 20' × 2.75:", respuesta: "105° 25'" },
+                    { pregunta: "60° 00' × 1.5:", respuesta: "90° 00'" }
+                ],
+                "División": [
+                    { pregunta: "120° ÷ 4:", respuesta: "30° 00'" },
+                    { pregunta: "180° ÷ 6:", respuesta: "30° 00'" },
+                    { pregunta: "360° ÷ 8:", respuesta: "45° 00'" },
+                    { pregunta: "270° ÷ 3:", respuesta: "90° 00'" },
+                    { pregunta: "150° 30' ÷ 5:", respuesta: "30° 06'" },
+                    { pregunta: "225° 45' ÷ 3:", respuesta: "75° 15'" },
+                    { pregunta: "90° 40' ÷ 2:", respuesta: "45° 20'" },
+                    { pregunta: "300° 00' ÷ 10:", respuesta: "30° 00'" }
+                ]
+            }
+        };
+
+        function crearEjercicios() {
+            const container = document.getElementById('exercise-container');
+            let ejercicioIndex = 0;
+
+            for (const [categoria, subcategorias] of Object.entries(ejercicios)) {
+                const categoriaDiv = document.createElement('div');
+                categoriaDiv.innerHTML = `<h2 class="category-toggle">${categoria}</h2>`;
+                const categoriaContent = document.createElement('div');
+                categoriaContent.className = 'category-content';
+
+                for (const [subcategoria, ejerciciosArray] of Object.entries(subcategorias)) {
+                    const subcategoriaDiv = document.createElement('div');
+                    subcategoriaDiv.innerHTML = `<h3>${subcategoria}</h3>`;
+                    const lista = document.createElement('ol');
+
+                    ejerciciosArray.forEach((ejercicio, index) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            ${ejercicio.pregunta}
+                            <input type="text" id="ejercicio-${ejercicioIndex}" placeholder="Tu respuesta">
+                            <span class="feedback" id="feedback-${ejercicioIndex}"></span>
+                        `;
+                        lista.appendChild(li);
+
+                        const input = li.querySelector('input');
+                        input.addEventListener('input', () => verificarRespuesta(input, ejercicio.respuesta, `feedback-${ejercicioIndex}`));
+                        ejercicioIndex++;
+                    });
+
+                    subcategoriaDiv.appendChild(lista);
+                    categoriaContent.appendChild(subcategoriaDiv);
+                }
+
+                categoriaDiv.appendChild(categoriaContent);
+                container.appendChild(categoriaDiv);
+            }
+
+            // Añadir event listeners para los toggles de categoría
+            document.querySelectorAll('.category-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    toggle.classList.toggle('active');
+                    const content = toggle.nextElementSibling;
+                    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+        }
+
+        function verificarRespuesta(input, respuestaCorrecta, feedbackId) {
+            const respuestaUsuario = input.value.trim();
+            const feedbackElement = document.getElementById(feedbackId);
+
+            if (respuestaUsuario === respuestaCorrecta) {
+                input.className = 'correct';
+                feedbackElement.textContent = '¡Correcto!';
+                feedbackElement.style.color = '#155724';
+            } else {
+                input.className = 'incorrect';
+                feedbackElement.textContent = 'Intenta de nuevo';
+                feedbackElement.style.color = '#721c24';
+            }
+
+            actualizarProgreso();
+        }
+
+        function actualizarProgreso() {
+            const totalEjercicios = document.querySelectorAll('input[type="text"]').length;
+            const ejerciciosCorrectos = document.querySelectorAll('.correct').length;
+            const porcentaje = Math.round((ejerciciosCorrectos / totalEjercicios) * 100);
+
+            const progressBar = document.getElementById('total-progress');
+            progressBar.style.width = `${porcentaje}%`;
+            progressBar.textContent = `${porcentaje}%`;
+        }
+
+        function verificarTodas() {
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                const feedbackId = input.id.replace('ejercicio-', 'feedback-');
+                const respuestaCorrecta = Object.values(ejercicios)
+                    .flatMap(subcategoria => Object.values(subcategoria).flat())
+                    .find(ejercicio => ejercicio.pregunta === input.previousSibling.textContent.trim()).respuesta;
+                verificarRespuesta(input, respuestaCorrecta, feedbackId);
+            });
+        }
+
+        function reiniciarTodas() {
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.value = '';
+                input.className = '';
+                const feedbackId = input.id.replace('ejercicio-', 'feedback-');
+                document.getElementById(feedbackId).textContent = '';
+            });
+            actualizarProgreso();
+        }
+
+        document.getElementById('check-all').addEventListener('click', verificarTodas);
+        document.getElementById('reset-all').addEventListener('click', reiniciarTodas);
+
+        // Inicializar la página
+        crearEjercicios();
+        actualizarProgreso();
+    </script>
+</body>
+</html>
