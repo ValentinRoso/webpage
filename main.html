@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
             padding: 20px;
             background-color: #f0f4f8;
         }
+
         header {
             background-color: #3498db;
             color: white;
@@ -22,22 +24,30 @@
             margin-bottom: 2rem;
             border-radius: 5px;
         }
-        h1, h2, h3, h4 {
+
+        h1,
+        h2,
+        h3,
+        h4 {
             color: #2c3e50;
         }
+
         section {
             background-color: white;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         ol {
             padding-left: 20px;
         }
+
         li {
             margin-bottom: 15px;
         }
+
         input[type="text"] {
             width: 120px;
             padding: 8px;
@@ -46,22 +56,26 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         .correct {
             background-color: #d4edda;
             border-color: #28a745;
             color: #155724;
         }
+
         .incorrect {
             background-color: #f8d7da;
             border-color: #dc3545;
             color: #721c24;
         }
+
         .feedback {
             display: inline-block;
             margin-left: 10px;
             font-weight: bold;
             transition: all 0.3s ease;
         }
+
         button {
             background-color: #3498db;
             color: white;
@@ -72,9 +86,11 @@
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #2980b9;
         }
+
         .progress-bar {
             width: 100%;
             background-color: #e0e0e0;
@@ -82,6 +98,7 @@
             border-radius: 3px;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
         }
+
         .progress {
             display: block;
             height: 22px;
@@ -93,29 +110,34 @@
             line-height: 22px;
             font-weight: bold;
         }
+
         .category-toggle {
             cursor: pointer;
             user-select: none;
         }
+
         .category-content {
             display: none;
         }
+
         .category-toggle::before {
             content: '▶';
             display: inline-block;
             margin-right: 5px;
             transition: transform 0.3s ease;
         }
+
         .category-toggle.active::before {
             transform: rotate(90deg);
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>Tareas de Matemáticas Interactivas</h1>
     </header>
-    
+
     <section>
         <h2>Progreso General</h2>
         <div class="progress-bar">
@@ -249,9 +271,6 @@
                             <span class="feedback" id="feedback-${ejercicioIndex}"></span>
                         `;
                         lista.appendChild(li);
-
-                        const input = li.querySelector('input');
-                        input.addEventListener('input', () => verificarRespuesta(input, ejercicio.respuesta, `feedback-${ejercicioIndex}`));
                         ejercicioIndex++;
                     });
 
@@ -283,11 +302,9 @@
                 feedbackElement.style.color = '#155724';
             } else {
                 input.className = 'incorrect';
-                feedbackElement.textContent = 'Intenta de nuevo';
+                feedbackElement.textContent = 'Incorrecto';
                 feedbackElement.style.color = '#721c24';
             }
-
-            actualizarProgreso();
         }
 
         function actualizarProgreso() {
@@ -308,6 +325,7 @@
                     .find(ejercicio => ejercicio.pregunta === input.previousSibling.textContent.trim()).respuesta;
                 verificarRespuesta(input, respuestaCorrecta, feedbackId);
             });
+            actualizarProgreso();
         }
 
         function reiniciarTodas() {
@@ -328,4 +346,5 @@
         actualizarProgreso();
     </script>
 </body>
+
 </html>
